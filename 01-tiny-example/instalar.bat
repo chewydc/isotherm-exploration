@@ -1,0 +1,16 @@
+@echo off
+echo Instalando dependencias para Kepler.gl...
+
+echo 1. Instalando pandas y jupyter...
+pip install pandas jupyter
+
+echo 2. Intentando instalar keplergl desde wheel precompilado...
+pip install --only-binary=all keplergl
+
+echo 3. Si falla, intentando version anterior...
+pip install keplergl==0.3.1
+
+echo 4. Ultima opcion - version mas antigua...
+pip install keplergl==0.2.2
+
+echo Instalacion completada!

@@ -1,0 +1,3 @@
+keplergl
+pandas
+jupyter
