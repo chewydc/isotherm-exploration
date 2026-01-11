@@ -3,7 +3,7 @@
 ## Descripción
 Visualización de sensores cada ~88m en finca de Río Negro con datos de temperatura a múltiples alturas (1m, 2m, 5m, 10m) y altitud real del terreno.
 
-![Ejemplo de salida](img/corrida_01.png)
+![Ejemplo de salida](img/Corrida_01.png)
 
 ## Instalación (RECOMENDADA)
 ```bash
