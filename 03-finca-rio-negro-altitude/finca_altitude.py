@@ -20,13 +20,13 @@ num_filas = int((lat_norte - lat_sur) / paso_lat) + 1
 num_cols = int((lon_este - lon_oeste) / paso_lon) + 1
 total_puntos = num_filas * num_cols
 
-print(f"📊 RESUMEN PREVIO:")
-print(f"   Área: {abs(lat_norte-lat_sur)*111000:.0f}m x {abs(lon_este-lon_oeste)*111000*np.cos(np.radians(-39)):.0f}m")
+print(f"RESUMEN PREVIO:")
+print(f"   Area: {abs(lat_norte-lat_sur)*111000:.0f}m x {abs(lon_este-lon_oeste)*111000*np.cos(np.radians(-39)):.0f}m")
 print(f"   Espaciado: ~88m entre sensores")
-print(f"   Cuadrícula: {num_filas} filas x {num_cols} columnas")
-print(f"   🎯 TOTAL A GENERAR: {total_puntos} sensores")
-print(f"   ⏱️ Tiempo estimado: ~{total_puntos*2/60:.1f} minutos (API + pausa)")
-print(f"   📡 Consultando altitud real para cada punto...")
+print(f"   Cuadricula: {num_filas} filas x {num_cols} columnas")
+print(f"   TOTAL A GENERAR: {total_puntos} sensores")
+print(f"   Tiempo estimado: ~{total_puntos*2/60:.1f} minutos (API + pausa)")
+print(f"   Consultando altitud real para cada punto...")
 print()
 
 def obtener_altitud_real(lat, lon):
@@ -97,13 +97,13 @@ while lat_current >= lat_sur:
     lat_current -= paso_lat
 
 df = pd.DataFrame(sensores)
-print(f"✓ Total sensores: {len(df)}")
-print(f"✓ Altitud terreno: {df['altitude_terrain'].min():.1f}m - {df['altitude_terrain'].max():.1f}m")
+print(f"Total sensores: {len(df)}")
+print(f"Altitud terreno: {df['altitude_terrain'].min():.1f}m - {df['altitude_terrain'].max():.1f}m")
 
 # Calcular escala de elevación automática
 escala_automatica = 1.0  # Sin escala - 1:1 real
-print(f"✓ Escala de elevación: 1:1 (sin amplificación)")
-print(f"✓ 1m real = 1m visual en el mapa")
+print(f"Escala de elevacion: 1:1 (sin amplificacion)")
+print(f"1m real = 1m visual en el mapa")
 
 # Crear mapa
 try:
@@ -124,6 +124,7 @@ try:
             },
             'mapStyle': {'styleType': 'satellite'},
             'visState': {
+                'filters': [],
                 'layers': [
                     {
                         'id': 'temp_1m',
@@ -131,7 +132,11 @@ try:
                         'config': {
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 1m',
-                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
+                            'columns': {
+                                'lat': 'latitude',
+                                'lng': 'longitude',
+                                'altitude': 'elevation_1m'
+                            },
                             'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
@@ -156,7 +161,11 @@ try:
                         'config': {
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 2m',
-                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
+                            'columns': {
+                                'lat': 'latitude',
+                                'lng': 'longitude',
+                                'altitude': 'elevation_2m'
+                            },
                             'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
@@ -181,7 +190,11 @@ try:
                         'config': {
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 5m',
-                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
+                            'columns': {
+                                'lat': 'latitude',
+                                'lng': 'longitude',
+                                'altitude': 'elevation_5m'
+                            },
                             'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
@@ -206,7 +219,11 @@ try:
                         'config': {
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 10m',
-                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
+                            'columns': {
+                                'lat': 'latitude',
+                                'lng': 'longitude',
+                                'altitude': 'elevation_10m'
+                            },
                             'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
@@ -231,7 +248,11 @@ try:
                         'config': {
                             'dataId': 'sensores_multinivel',
                             'label': 'Altitud Terreno',
-                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
+                            'columns': {
+                                'lat': 'latitude',
+                                'lng': 'longitude',
+                                'altitude': 'altitude_terrain'
+                            },
                             'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
@@ -247,7 +268,7 @@ try:
                         },
                         'visualChannels': {
                             'colorField': {'name': 'altitude_terrain', 'type': 'real'},
-                            'heightField': {'name': 'elevation_terrain', 'type': 'real'}
+                            'heightField': {'name': 'altitude_terrain', 'type': 'real'}
                         }
                     }
                 ]
@@ -257,16 +278,16 @@ try:
     
     mapa.config = config
     mapa.save_to_html(file_name='finca_altitude_mapa.html')
-    print("✓ Mapa guardado: finca_altitude_mapa.html")
-    print("✓ 5 capas todas visibles con 3D automático")
+    print("Mapa guardado: finca_altitude_mapa.html")
+    print("5 capas todas visibles con 3D automatico")
     
 except ImportError:
-    print("⚠ Keplergl no disponible")
+    print("Keplergl no disponible")
 except Exception as e:
     print(f"Error en mapa: {e}")
 
 df.to_csv('finca_altitude_datos.csv', index=False)
-print("✓ CSV guardado con datos multinivel: finca_altitude_datos.csv")
+print("CSV guardado con datos multinivel: finca_altitude_datos.csv")
 print("\nDatos por sensor:")
 print("- Altitud real del terreno")
 print("- Temperatura a 1m, 2m, 5m y 10m de altura")
