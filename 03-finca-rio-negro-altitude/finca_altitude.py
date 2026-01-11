@@ -101,7 +101,6 @@ print(f"✓ Total sensores: {len(df)}")
 print(f"✓ Altitud terreno: {df['altitude_terrain'].min():.1f}m - {df['altitude_terrain'].max():.1f}m")
 
 # Calcular escala de elevación automática
-# Kepler.gl usa elevación relativa - 1 metro = 1 unidad visual
 escala_automatica = 1.0  # Sin escala - 1:1 real
 print(f"✓ Escala de elevación: 1:1 (sin amplificación)")
 print(f"✓ 1m real = 1m visual en el mapa")
@@ -120,13 +119,12 @@ try:
                 'latitude': df['latitude'].mean(),
                 'longitude': df['longitude'].mean(),
                 'zoom': 15,
-                'pitch': 50,  # Vista 3D inclinada
+                'pitch': 50,
                 'bearing': 0
             },
             'mapStyle': {'styleType': 'satellite'},
             'visState': {
                 'layers': [
-                    # CAPA 1: Temperatura a 1m (visible por defecto)
                     {
                         'id': 'temp_1m',
                         'type': 'point',
@@ -134,16 +132,15 @@ try:
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 1m',
                             'columns': {'lat': 'latitude', 'lng': 'longitude'},
-                            'isVisible': True,  # Visible por defecto
+                            'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
                                 'opacity': 0.8,
                                 'outline': False,
                                 'filled': True,
-                                'enable3d': True,  # Habilitar 3D
-                                'elevationScale': escala_automatica,  # Escala calculada automáticamente
+                                'enable3d': True,
+                                'elevationScale': escala_automatica,
                                 'colorRange': {
-                                    'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
                                 }
                             }
@@ -153,7 +150,6 @@ try:
                             'heightField': {'name': 'elevation_1m', 'type': 'real'}
                         }
                     },
-                    # CAPA 2: Temperatura a 2m (visible)
                     {
                         'id': 'temp_2m',
                         'type': 'point',
@@ -170,7 +166,6 @@ try:
                                 'enable3d': True,
                                 'elevationScale': escala_automatica,
                                 'colorRange': {
-                                    'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
                                 }
                             }
@@ -180,7 +175,6 @@ try:
                             'heightField': {'name': 'elevation_2m', 'type': 'real'}
                         }
                     },
-                    # CAPA 3: Temperatura a 5m (visible)
                     {
                         'id': 'temp_5m',
                         'type': 'point',
@@ -197,7 +191,6 @@ try:
                                 'enable3d': True,
                                 'elevationScale': escala_automatica,
                                 'colorRange': {
-                                    'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
                                 }
                             }
@@ -207,7 +200,6 @@ try:
                             'heightField': {'name': 'elevation_5m', 'type': 'real'}
                         }
                     },
-                    # CAPA 4: Temperatura a 10m (visible)
                     {
                         'id': 'temp_10m',
                         'type': 'point',
@@ -224,7 +216,6 @@ try:
                                 'enable3d': True,
                                 'elevationScale': escala_automatica,
                                 'colorRange': {
-                                    'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
                                 }
                             }
@@ -234,7 +225,6 @@ try:
                             'heightField': {'name': 'elevation_10m', 'type': 'real'}
                         }
                     },
-                    # CAPA 5: Altitud del terreno (visible)
                     {
                         'id': 'altitud',
                         'type': 'point',
@@ -251,7 +241,6 @@ try:
                                 'enable3d': True,
                                 'elevationScale': escala_automatica,
                                 'colorRange': {
-                                    'name': 'Elevación',
                                     'colors': ['#0571b0', '#92c5de', '#f7f7f7', '#f4a582', '#ca0020']
                                 }
                             }
@@ -265,47 +254,11 @@ try:
             }
         }
     }
-                            'colorField': {'name': 'temp_10m', 'type': 'real'},
-                            'heightField': {'name': 'elevation_10m', 'type': 'real'}
-                        }
-                    },
-                    # CAPA 5: Altitud del terreno (oculta)
-                    {
-                        'id': 'altitud',
-                        'type': 'point',
-                        'config': {
-                            'dataId': 'sensores_multinivel',
-                            'label': 'Altitud Terreno',
-                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
-                            'isVisible': False,
-                            'visConfig': {
-                                'radius': 8,
-                                'opacity': 0.8,
-                                'outline': False,
-                                'filled': True,
-                                'colorRange': {
-                                    'name': 'Elevación',
-                                    'colors': ['#0571b0', '#92c5de', '#f7f7f7', '#f4a582', '#ca0020']
-                                }
-                            }
-                        },
-                        'visualChannels': {
-                            'colorField': {'name': 'altitude_terrain', 'type': 'real'}
-                        }
-                    }
-                ]
-            }
-        }
-    }
     
     mapa.config = config
     mapa.save_to_html(file_name='finca_altitude_mapa.html')
     print("✓ Mapa guardado: finca_altitude_mapa.html")
-    print("✓ 5 capas configuradas:")
-    print("  - Temperatura 1m (visible por defecto)")
-    print("  - Temperatura 2m, 5m, 10m (ocultas)")
-    print("  - Altitud terreno (oculta)")
-    print("✓ Usa el panel de capas para alternar entre niveles")
+    print("✓ 5 capas todas visibles con 3D automático")
     
 except ImportError:
     print("⚠ Keplergl no disponible")
