@@ -153,7 +153,7 @@ try:
                             'heightField': {'name': 'elevation_1m', 'type': 'real'}
                         }
                     },
-                    # CAPA 2: Temperatura a 2m (oculta)
+                    # CAPA 2: Temperatura a 2m (visible)
                     {
                         'id': 'temp_2m',
                         'type': 'point',
@@ -161,12 +161,14 @@ try:
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 2m',
                             'columns': {'lat': 'latitude', 'lng': 'longitude'},
-                            'isVisible': False,
+                            'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
                                 'opacity': 0.8,
                                 'outline': False,
                                 'filled': True,
+                                'enable3d': True,
+                                'elevationScale': escala_automatica,
                                 'colorRange': {
                                     'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
@@ -178,7 +180,7 @@ try:
                             'heightField': {'name': 'elevation_2m', 'type': 'real'}
                         }
                     },
-                    # CAPA 3: Temperatura a 5m (oculta)
+                    # CAPA 3: Temperatura a 5m (visible)
                     {
                         'id': 'temp_5m',
                         'type': 'point',
@@ -186,12 +188,14 @@ try:
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 5m',
                             'columns': {'lat': 'latitude', 'lng': 'longitude'},
-                            'isVisible': False,
+                            'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
                                 'opacity': 0.8,
                                 'outline': False,
                                 'filled': True,
+                                'enable3d': True,
+                                'elevationScale': escala_automatica,
                                 'colorRange': {
                                     'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
@@ -203,7 +207,7 @@ try:
                             'heightField': {'name': 'elevation_5m', 'type': 'real'}
                         }
                     },
-                    # CAPA 4: Temperatura a 10m (oculta)
+                    # CAPA 4: Temperatura a 10m (visible)
                     {
                         'id': 'temp_10m',
                         'type': 'point',
@@ -211,12 +215,14 @@ try:
                             'dataId': 'sensores_multinivel',
                             'label': 'Temperatura 10m',
                             'columns': {'lat': 'latitude', 'lng': 'longitude'},
-                            'isVisible': False,
+                            'isVisible': True,
                             'visConfig': {
                                 'radius': 8,
                                 'opacity': 0.8,
                                 'outline': False,
                                 'filled': True,
+                                'enable3d': True,
+                                'elevationScale': escala_automatica,
                                 'colorRange': {
                                     'name': 'Temperatura',
                                     'colors': ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
@@ -224,6 +230,41 @@ try:
                             }
                         },
                         'visualChannels': {
+                            'colorField': {'name': 'temp_10m', 'type': 'real'},
+                            'heightField': {'name': 'elevation_10m', 'type': 'real'}
+                        }
+                    },
+                    # CAPA 5: Altitud del terreno (visible)
+                    {
+                        'id': 'altitud',
+                        'type': 'point',
+                        'config': {
+                            'dataId': 'sensores_multinivel',
+                            'label': 'Altitud Terreno',
+                            'columns': {'lat': 'latitude', 'lng': 'longitude'},
+                            'isVisible': True,
+                            'visConfig': {
+                                'radius': 8,
+                                'opacity': 0.8,
+                                'outline': False,
+                                'filled': True,
+                                'enable3d': True,
+                                'elevationScale': escala_automatica,
+                                'colorRange': {
+                                    'name': 'Elevación',
+                                    'colors': ['#0571b0', '#92c5de', '#f7f7f7', '#f4a582', '#ca0020']
+                                }
+                            }
+                        },
+                        'visualChannels': {
+                            'colorField': {'name': 'altitude_terrain', 'type': 'real'},
+                            'heightField': {'name': 'elevation_terrain', 'type': 'real'}
+                        }
+                    }
+                ]
+            }
+        }
+    }
                             'colorField': {'name': 'temp_10m', 'type': 'real'},
                             'heightField': {'name': 'elevation_10m', 'type': 'real'}
                         }
