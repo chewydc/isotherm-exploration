@@ -1,0 +1,6 @@
+pandas
+numpy
+keplergl
+requests
+matplotlib
+scipy

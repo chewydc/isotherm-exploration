@@ -112,4 +112,5 @@ MIT License - Ver cada carpeta para detalles específicos.
 
 ---
 
+
 **Desarrollado para exploración de isotermas en fincas argentinas** 🇦🇷
