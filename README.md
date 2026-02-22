@@ -1,116 +1,250 @@
-# Isotherm Exploration - Kepler.gl Examples
+# Isoterma - Monitoreo Agrícola de Precisión
 
-Exploración de isotermas y visualización de datos geoespaciales usando Kepler.gl para análisis agrícola en Argentina.
+Sistema completo de monitoreo de isotermas para agricultura de precisión con visualización Kepler.gl.
 
-## 📁 Casos de Estudio
+## 🏗️ Arquitectura
 
-### [01-tiny-example](01-tiny-example/)
-**Ejemplo básico de Kepler.gl**
-- 20 puntos de temperatura en Madrid
-- Introducción a Kepler.gl
-- Configuración simple
-- Ideal para aprender los conceptos básicos
+```
+┌─────────────────┐      ┌──────────────────┐
+│                 │      │                  │
+│  Frontend       │─────▶│  Backend         │
+│  SvelteKit      │      │  FastAPI         │
+│  Kepler.gl      │      │  Open-Meteo API  │
+│  Port: 3000     │      │  Port: 8000      │
+│                 │      │                  │
+└─────────────────┘      └──────────────────┘
+```
 
-### [02-finca-rio-negro](02-finca-rio-negro/)
-**Chacra 143 - Cuadrícula básica**
-- Finca real en Río Negro, Argentina
-- Cuadrícula cada 100m dentro de polígono
-- 4 esquinas exactas + sensores internos
-- Datos de temperatura simulados
+## 📦 Componentes
 
-### [03-finca-rio-negro-altitude](03-finca-rio-negro-altitude/)
-**Sensores multinivel con altitud real** ⭐
-- Misma finca que caso 02
-- **5 capas intercambiables:**
-  - Temperatura a 1m, 2m, 5m, 10m
-  - Altitud del terreno
-- **Altitud real** vía API Open-Elevation
-- **Vista 3D** con elevaciones proporcionales
-- Cuadrícula cada ~88m
+### Backend (FastAPI)
+- API REST para datos meteorológicos
+- Integración con Open-Meteo API
+- Gestión de fincas y sensores
+- Validación de sensores térmicos
 
-## 🛠️ Tecnologías
+### Frontend (SvelteKit + Kepler.gl)
+- Dashboard interactivo
+- Mapa de isotermas con Kepler.gl
+- 4 capas de temperatura (1m, 2m, 5m, 10m)
+- Pronóstico meteorológico 72h
+- Tema dark/light
 
-- **Kepler.gl** - Visualización geoespacial interactiva
-- **Python** - Procesamiento de datos
-- **Pandas** - Manipulación de datos
-- **Open-Elevation API** - Altitudes reales
-- **Jupyter** - Desarrollo interactivo
+## 🚀 Inicio Rápido con Docker
 
-## 🚀 Inicio Rápido
+### Requisitos
+- Docker Desktop instalado
+- Docker Compose
 
-1. **Clonar repositorio:**
-   ```bash
-   git clone https://github.com/chewydc/isotherm-exploration.git
-   cd isotherm-exploration
-   ```
+### Scripts Automáticos
 
-2. **Elegir caso de estudio:**
-   ```bash
-   cd 03-finca-rio-negro-altitude  # Recomendado
-   ```
+```bash
+cd web
 
-3. **Instalar dependencias:**
-   ```bash
-   instalar_final.bat
-   ```
+# Iniciar todo el stack
+docker-start.bat
 
-4. **Ejecutar:**
-   ```bash
-   env\Scripts\activate
-   python finca_altitude.py
-   ```
+# Ver logs
+docker-logs.bat
 
-5. **Abrir mapa:**
-   ```bash
-   # Abrir archivo HTML generado en navegador
-   ```
+# Detener
+docker-stop.bat
+```
 
-## 📊 Características Principales
+## 🌐 URLs
 
-### Visualización Interactiva
-- **Mapas de calor** por temperatura
-- **Vista satelital** de alta resolución
-- **Capas intercambiables** para análisis comparativo
-- **Zoom y navegación** fluida
+Una vez iniciado:
 
-### Datos Geoespaciales
-- **Coordenadas GPS** exactas
-- **Altitudes reales** sobre nivel del mar
-- **Cuadrículas precisas** cada 50-100m
-- **Polígonos irregulares** respetados
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
-### Análisis Multinivel
-- **Temperaturas estratificadas** (1m, 2m, 5m, 10m)
-- **Visualización 3D** con elevaciones
-- **Comparación entre capas** atmosféricas
-- **Datos exportables** en CSV
+## 📁 Estructura del Proyecto
 
-## 🌍 Casos de Uso
+```
+kepler/
+├── web/                       # Aplicación Web
+│   ├── isoterma_backend/      # Backend FastAPI
+│   ├── isoterma_frontend/     # Frontend SvelteKit
+│   ├── docker-compose.yml     # Orquestación
+│   ├── docker-start.bat       # Script inicio
+│   ├── docker-stop.bat        # Script detener
+│   ├── docker-logs.bat        # Script logs
+│   └── README.md
+│
+├── 01-tiny-example/           # Ejemplos básicos Kepler.gl
+├── 02-finca-rio-negro/        # Ejemplo finca simple
+├── 03-finca-rio-negro-altitude/  # Ejemplo con altitud
+├── 04-visual-heatmap/         # Ejemplos heatmap avanzados
+├── 05-API Integration Temperature/  # Ejemplos integración API
+└── README.md                  # Este archivo
+```
 
-- **Agricultura de precisión**
-- **Monitoreo ambiental**
-- **Análisis climático**
-- **Investigación agronómica**
-- **Planificación de cultivos**
+## 🗺️ Características Kepler.gl
 
-## 📈 Progresión de Complejidad
+✅ **Heatmaps** de temperatura en 4 alturas  
+✅ **Vista 3D** con elevaciones del terreno  
+✅ **Capas intercambiables** para análisis  
+✅ **Vista satelital** de alta resolución  
+✅ **Tooltips** con datos de sensores  
+✅ **Exportar** configuraciones  
 
-1. **Básico** → Puntos simples en mapa
-2. **Intermedio** → Cuadrícula en polígono real
-3. **Avanzado** → Múltiples capas con altitud 3D
+## 🔧 Desarrollo Local (Sin Docker)
 
-## 🔧 Requisitos
+### Backend
 
-- Python 3.8+
-- Conexión a internet (para API de altitud)
-- Navegador web moderno
-- ~2GB espacio libre
+```bash
+cd web/isoterma_backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+```
 
-## 📝 Licencia
+### Frontend
 
-MIT License - Ver cada carpeta para detalles específicos.
+```bash
+cd web/isoterma_frontend
+npm install
+npm run dev
+```
+
+## 📊 Datos de Ejemplo
+
+El proyecto incluye 2 fincas de ejemplo:
+
+1. **Chacra 143** (Río Negro)
+   - 80 sensores en cuadrícula
+   - 143 hectáreas
+   - Cultivo: Manzanas
+
+2. **Quinta Los Álamos** (Río Negro)
+   - 60 sensores
+   - 95 hectáreas
+   - Cultivo: Peras
+
+## 🐛 Troubleshooting
+
+### Puerto ocupado
+
+```bash
+# Ver qué usa el puerto
+netstat -ano | findstr :3000
+netstat -ano | findstr :8000
+
+# Cambiar puerto en docker-compose.yml
+ports:
+  - "3001:3000"  # Frontend
+  - "8001:8000"  # Backend
+```
+
+### Rebuild completo
+
+```bash
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### Ver logs de un servicio específico
+
+```bash
+docker-compose logs -f backend
+docker-compose logs -f frontend
+```
+
+### Entrar al contenedor
+
+```bash
+docker exec -it isoterma-backend bash
+docker exec -it isoterma-frontend sh
+```
+
+## 🔄 Actualizar Código
+
+```bash
+# Detener
+docker-compose down
+
+# Rebuild
+docker-compose build
+
+# Reiniciar
+docker-compose up -d
+```
+
+## 📝 Variables de Entorno
+
+### Backend
+- `LOG_LEVEL`: Nivel de logs (info, debug, warning)
+- `PYTHONUNBUFFERED`: Output inmediato de logs
+
+### Frontend
+- `NODE_ENV`: production/development
+- `PUBLIC_API_URL`: URL del backend API
+
+## 🚢 Producción
+
+Para producción, considera:
+
+1. **Usar nginx** como reverse proxy
+2. **HTTPS** con certificados SSL
+3. **Variables de entorno** desde archivos .env
+4. **Volúmenes** para persistencia de datos
+5. **Health checks** configurados
+6. **Logging** centralizado
+7. **Monitoring** (Prometheus/Grafana)
+
+### docker-compose.prod.yml (ejemplo)
+
+```yaml
+version: '3.8'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - backend
+      - frontend
+
+  backend:
+    build: ./isoterma_backend
+    environment:
+      - LOG_LEVEL=warning
+    restart: always
+
+  frontend:
+    build: ./isoterma_frontend
+    environment:
+      - NODE_ENV=production
+    restart: always
+```
+
+## 📚 Documentación
+
+- [Web Application](./web/README.md)
+- [Backend README](./web/isoterma_backend/README.md)
+- [Frontend README](./web/isoterma_frontend/README.md)
+- [API Docs](http://localhost:8000/docs) (cuando esté corriendo)
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -am 'Agregar funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
+
+## 📄 Licencia
+
+MIT License
 
 ---
 
-
-**Desarrollado para exploración de isotermas en fincas argentinas** 🇦🇷
+**Desarrollado para agricultura de precisión en Argentina** 🌾🇦🇷

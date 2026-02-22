@@ -1,0 +1,17 @@
+node_modules
+.svelte-kit
+build
+dist
+.env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+*.swp
+coverage
+.git
+.gitignore
+README.md

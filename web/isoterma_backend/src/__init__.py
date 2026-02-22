@@ -1,0 +1,1 @@
+# Isoterma Backend - Weather API Service

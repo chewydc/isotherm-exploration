@@ -1,54 +1,38 @@
-# Entornos virtuales
-env/
-venv/
+# Environment
 .env
-.venv
+.env.local
+.env.*.local
 
-# Archivos generados por los scripts
-*.html
-*.csv
-
-# Archivos de Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+venv/
+env/
+ENV/
+
+# Node
+node_modules/
+.svelte-kit/
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Docker
+*.log
 
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Sistema operativo
+# OS
 .DS_Store
 Thumbs.db
-desktop.ini
 
 # Logs
 *.log
-
-# Archivos temporales
-*.tmp
-*.temp
-*.bak
+npm-debug.log*
