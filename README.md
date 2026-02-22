@@ -64,7 +64,7 @@ Una vez iniciado:
 
 ```
 kepler/
-├── web/                       # Aplicación Web
+├── web/                       # Aplicación Web Principal
 │   ├── isoterma_backend/      # Backend FastAPI
 │   ├── isoterma_frontend/     # Frontend SvelteKit
 │   ├── docker-compose.yml     # Orquestación
@@ -81,9 +81,51 @@ kepler/
 └── README.md                  # Este archivo
 ```
 
-## 🗺️ Características Kepler.gl
+## 🔬 Carpetas de Exploración
 
-✅ **Heatmaps** de temperatura en 4 alturas  
+### 01-tiny-example/
+Ejemplos básicos de Kepler.gl con datos de temperatura de Madrid:
+- Configuración inicial de mapas
+- Visualización de puntos de temperatura
+- Archivos HTML listos para abrir en navegador
+
+### 02-finca-rio-negro/
+Ejemplo de finca real en Río Negro, Argentina:
+- Datos de sensores de temperatura reales
+- Visualización de isotermas en cultivos
+- 19 sensores distribuidos en la finca
+
+### 03-finca-rio-negro-altitude/
+Misma finca con datos de altitud:
+- Visualización 3D del terreno
+- Correlación temperatura-altitud
+- Análisis topográfico
+
+### 04-visual-heatmap/
+Visualizaciones avanzadas de mapas de calor:
+- Heatmaps con diferentes configuraciones
+- Isolíneas de temperatura
+- Superficies continuas coloreadas
+- Análisis de umbrales térmicos
+
+### 05-API Integration Temperature/
+Integración con APIs meteorológicas:
+- Validación de sensores vs APIs públicas
+- Ejemplos con Open-Meteo API
+- Scripts de validación automática
+- Parámetros agrícolas completos
+
+## 🗺️ Características de Visualización
+
+### Aplicación Web (web/)
+✅ **Dashboard interactivo** con SvelteKit  
+✅ **API REST** con FastAPI  
+✅ **Integración Open-Meteo** para datos meteorológicos  
+✅ **Validación de sensores** automática  
+✅ **Pronóstico 72h** con datos agrícolas  
+
+### Ejemplos Kepler.gl (01-05/)
+✅ **Heatmaps** de temperatura en múltiples alturas  
 ✅ **Vista 3D** con elevaciones del terreno  
 ✅ **Capas intercambiables** para análisis  
 ✅ **Vista satelital** de alta resolución  
