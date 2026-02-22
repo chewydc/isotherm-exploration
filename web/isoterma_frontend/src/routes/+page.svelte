@@ -13,14 +13,39 @@
 		lastFarmId = $selectedFarm.id;
 		loadWeatherData();
 		loadAlerts();
+		refreshFarmData();
 	}
 
 	afterNavigate(() => {
 		if ($selectedFarm) {
 			loadWeatherData();
 			loadAlerts();
+			refreshFarmData();
 		}
 	});
+
+	// Actualizar cuando la ventana recibe foco (volver de configuración)
+	if (typeof window !== 'undefined') {
+		window.addEventListener('focus', () => {
+			if ($selectedFarm) {
+				refreshFarmData();
+				loadAlerts();
+			}
+		});
+	}
+
+	async function refreshFarmData() {
+		if (!$selectedFarm) return;
+		try {
+			const response = await api.getFarm($selectedFarm.id);
+			if (response.success) {
+				// Actualizar el store con los datos más recientes
+				selectedFarm.set(response.data || response.farm);
+			}
+		} catch (error) {
+			console.error('Error refreshing farm data:', error);
+		}
+	}
 
 	async function loadWeatherData() {
 		if (!$selectedFarm) return;
