@@ -36,3 +36,23 @@ async def get_farm_detail(farm_id: str):
     except Exception as e:
         logger.error(f"Error in get_farm_detail: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/{farm_id}/settings")
+async def update_farm_settings(farm_id: str, settings: dict):
+    """Update farm threshold settings"""
+    try:
+        result = FarmService.update_farm_settings(farm_id, settings)
+        return {"success": True, "data": result}
+    except Exception as e:
+        logger.error(f"Error updating farm settings: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/{farm_id}/alerts")
+async def get_farm_alerts(farm_id: str):
+    """Get current alerts for farm based on thresholds"""
+    try:
+        alerts = FarmService.check_temperature_alerts(farm_id)
+        return {"success": True, "data": alerts}
+    except Exception as e:
+        logger.error(f"Error getting farm alerts: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

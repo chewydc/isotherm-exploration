@@ -13,6 +13,22 @@ export const api = {
 		return res.json();
 	},
 
+	async updateFarmSettings(id: string, settings: any) {
+		const res = await fetch(`${API_BASE_URL}/farms/${id}/settings`, {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(settings)
+		});
+		if (!res.ok) throw new Error('Error updating settings');
+		return res.json();
+	},
+
+	async getFarmAlerts(id: string) {
+		const res = await fetch(`${API_BASE_URL}/farms/${id}/alerts`);
+		if (!res.ok) throw new Error('Error fetching alerts');
+		return res.json();
+	},
+
 	async getCurrentWeather(lat: number, lon: number) {
 		const res = await fetch(`${API_BASE_URL}/weather/current?latitude=${lat}&longitude=${lon}`);
 		if (!res.ok) throw new Error('Error fetching weather');
