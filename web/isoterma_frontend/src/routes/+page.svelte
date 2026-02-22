@@ -89,15 +89,9 @@
 
 	{#if $selectedFarm}
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 relative">
+			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
 				<h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Finca</h3>
 				<p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{$selectedFarm.name}</p>
-				<a 
-					href="/farm/{$selectedFarm.id}/settings" 
-					class="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
-				>
-					⚙️ Configurar
-				</a>
 			</div>
 
 			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -117,7 +111,7 @@
 				</p>
 			</div>
 
-			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 relative">
 				<h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Umbrales</h3>
 				{#if $selectedFarm.settings}
 					<p class="text-lg font-bold text-gray-900 dark:text-white mt-2">
@@ -129,6 +123,12 @@
 				{:else}
 					<p class="text-lg text-gray-500 dark:text-gray-400 mt-2">No configurado</p>
 				{/if}
+				<a 
+					href="/farm/{$selectedFarm.id}/settings" 
+					class="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
+				>
+					⚙️ Configurar
+				</a>
 			</div>
 		</div>
 

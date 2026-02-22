@@ -31,16 +31,23 @@ class FarmService:
             return []
     
     @staticmethod
-    def get_farm_by_id(farm_id: str) -> Optional[Farm]:
+    def get_farm_by_id(farm_id: str) -> Optional[dict]:
         """Get specific farm by ID"""
-        farms = FarmService.get_all_farms()
-        for farm in farms:
-            if farm.id == farm_id:
-                logger.info(f"Found farm: {farm.name}")
-                return farm
-        
-        logger.warning(f"Farm not found: {farm_id}")
-        return None
+        try:
+            with open(FarmService.DATA_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            for farm in data:
+                if farm["id"] == farm_id:
+                    logger.info(f"Found farm: {farm['name']}")
+                    return farm
+            
+            logger.warning(f"Farm not found: {farm_id}")
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error loading farm: {e}")
+            return None
     
     @staticmethod
     def update_farm_settings(farm_id: str, settings: dict) -> dict:
