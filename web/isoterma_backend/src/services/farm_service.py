@@ -93,6 +93,8 @@ class FarmService:
             max_temp = settings.get("temperature_threshold_max", 50)
             
             alerts = []
+            
+            # Alertas de sensores actuales
             for sensor in farm.get("sensors", []):
                 temp = sensor.get("temperature", 0)
                 sensor_id = sensor.get("id", "unknown")
@@ -104,7 +106,8 @@ class FarmService:
                         "temperature": temp,
                         "threshold": min_temp,
                         "message": f"Temperatura baja detectada: {temp}°C (mín: {min_temp}°C)",
-                        "severity": "warning"
+                        "severity": "warning",
+                        "alert_type": "current"
                     })
                 elif temp > max_temp:
                     alerts.append({
@@ -113,8 +116,13 @@ class FarmService:
                         "temperature": temp,
                         "threshold": max_temp,
                         "message": f"Temperatura alta detectada: {temp}°C (máx: {max_temp}°C)",
-                        "severity": "warning"
+                        "severity": "warning",
+                        "alert_type": "current"
                     })
+            
+            # Alertas de pronóstico
+            forecast_alerts = FarmService._check_forecast_alerts(farm, min_temp, max_temp)
+            alerts.extend(forecast_alerts)
             
             logger.info(f"Found {len(alerts)} alerts for farm {farm_id}")
             return alerts
@@ -122,3 +130,61 @@ class FarmService:
         except Exception as e:
             logger.error(f"Error checking alerts: {e}")
             raise
+    
+    @staticmethod
+    def _check_forecast_alerts(farm: dict, min_temp: float, max_temp: float) -> List[dict]:
+        """Check forecast for temperature alerts"""
+        try:
+            from src.services.weather_service import WeatherService
+            import asyncio
+            
+            # Obtener pronóstico
+            lat = farm["location"]["latitude"]
+            lon = farm["location"]["longitude"]
+            
+            # Ejecutar función async en contexto sync
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            forecast_data = loop.run_until_complete(
+                WeatherService.get_forecast(lat, lon, 3)
+            )
+            loop.close()
+            
+            alerts = []
+            hourly = forecast_data.get("hourly", {})
+            times = hourly.get("time", [])
+            temperatures = hourly.get("temperature_2m", [])
+            
+            # Revisar próximas 24 horas
+            for i in range(min(24, len(temperatures))):
+                temp = temperatures[i]
+                time_str = times[i] if i < len(times) else "unknown"
+                
+                if temp < min_temp:
+                    alerts.append({
+                        "type": "forecast_temperature_low",
+                        "sensor_id": "forecast",
+                        "temperature": temp,
+                        "threshold": min_temp,
+                        "time": time_str,
+                        "message": f"Pronóstico: {temp}°C a las {time_str[-5:]} (mín: {min_temp}°C)",
+                        "severity": "info",
+                        "alert_type": "forecast"
+                    })
+                elif temp > max_temp:
+                    alerts.append({
+                        "type": "forecast_temperature_high",
+                        "sensor_id": "forecast",
+                        "temperature": temp,
+                        "threshold": max_temp,
+                        "time": time_str,
+                        "message": f"Pronóstico: {temp}°C a las {time_str[-5:]} (máx: {max_temp}°C)",
+                        "severity": "info",
+                        "alert_type": "forecast"
+                    })
+            
+            return alerts
+            
+        except Exception as e:
+            logger.error(f"Error checking forecast alerts: {e}")
+            return []
