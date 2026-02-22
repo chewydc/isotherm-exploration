@@ -38,13 +38,9 @@
 		try {
 			saving = true;
 			saveMessage = '';
-			const response = await fetch(`/api/v1/farms/${farmId}/settings`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(settings)
-			});
+			const response = await api.updateFarmSettings(farmId, settings);
 			
-			if (response.ok) {
+			if (response.success) {
 				saveMessage = '✅ Configuración guardada correctamente';
 				setTimeout(() => saveMessage = '', 3000);
 			} else {
