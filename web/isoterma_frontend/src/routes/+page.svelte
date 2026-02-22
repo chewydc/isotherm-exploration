@@ -69,7 +69,7 @@
 				<p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{$selectedFarm.name}</p>
 				<a 
 					href="/farm/{$selectedFarm.id}/settings" 
-					class="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
+					class="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
 				>
 					⚙️ Configurar
 				</a>
