@@ -158,16 +158,16 @@
 				{:else}
 					<div class="space-y-2 max-h-48 overflow-y-auto">
 						{#each alerts as alert}
-							<div class="border-l-4 {alert.alert_type === 'forecast' ? 'border-blue-400 bg-blue-50' : 'border-yellow-400 bg-yellow-50'} dark:bg-yellow-900/20 p-3 rounded">
+							<div class="border-l-4 {alert.alert_type === 'forecast' ? 'border-blue-400 bg-blue-50' : alert.alert_type === 'weather' ? 'border-orange-400 bg-orange-50' : 'border-yellow-400 bg-yellow-50'} dark:bg-yellow-900/20 p-3 rounded">
 								<div class="flex items-start">
-									<div class="{alert.alert_type === 'forecast' ? 'text-blue-600' : 'text-yellow-600'} mr-2">
-										{alert.alert_type === 'forecast' ? '🔮' : '⚠️'}
+									<div class="{alert.alert_type === 'forecast' ? 'text-blue-600' : alert.alert_type === 'weather' ? 'text-orange-600' : 'text-yellow-600'} mr-2">
+										{alert.alert_type === 'forecast' ? '🔮' : alert.alert_type === 'weather' ? '🌡️' : '⚠️'}
 									</div>
 									<div class="flex-1">
-										<p class="font-medium {alert.alert_type === 'forecast' ? 'text-blue-800' : 'text-yellow-800'} dark:text-yellow-200 text-sm">
-											{alert.alert_type === 'forecast' ? 'Pronóstico' : alert.sensor_id}
+										<p class="font-medium {alert.alert_type === 'forecast' ? 'text-blue-800' : alert.alert_type === 'weather' ? 'text-orange-800' : 'text-yellow-800'} dark:text-yellow-200 text-sm">
+											{alert.alert_type === 'forecast' ? 'Pronóstico' : alert.alert_type === 'weather' ? 'Clima Actual' : alert.sensor_id}
 										</p>
-										<p class="text-xs {alert.alert_type === 'forecast' ? 'text-blue-700' : 'text-yellow-700'} dark:text-yellow-300">
+										<p class="text-xs {alert.alert_type === 'forecast' ? 'text-blue-700' : alert.alert_type === 'weather' ? 'text-orange-700' : 'text-yellow-700'} dark:text-yellow-300">
 											{alert.message}
 										</p>
 									</div>

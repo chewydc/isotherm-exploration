@@ -120,6 +120,10 @@ class FarmService:
                         "alert_type": "current"
                     })
             
+            # Alertas de clima actual (API meteorológica)
+            weather_alerts = FarmService._check_current_weather_alerts(farm, min_temp, max_temp)
+            alerts.extend(weather_alerts)
+            
             # Alertas de pronóstico
             forecast_alerts = FarmService._check_forecast_alerts(farm, min_temp, max_temp)
             alerts.extend(forecast_alerts)
@@ -187,4 +191,54 @@ class FarmService:
             
         except Exception as e:
             logger.error(f"Error checking forecast alerts: {e}")
+            return []
+    
+    @staticmethod
+    def _check_current_weather_alerts(farm: dict, min_temp: float, max_temp: float) -> List[dict]:
+        """Check current weather API for temperature alerts"""
+        try:
+            from src.services.weather_service import WeatherService
+            import asyncio
+            
+            # Obtener clima actual
+            lat = farm["location"]["latitude"]
+            lon = farm["location"]["longitude"]
+            
+            # Ejecutar función async en contexto sync
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            weather_data = loop.run_until_complete(
+                WeatherService.get_current_weather(lat, lon)
+            )
+            loop.close()
+            
+            alerts = []
+            current = weather_data.get("current", {})
+            temp = current.get("temperature_2m", 0)
+            
+            if temp < min_temp:
+                alerts.append({
+                    "type": "weather_temperature_low",
+                    "sensor_id": "weather_api",
+                    "temperature": temp,
+                    "threshold": min_temp,
+                    "message": f"Clima actual: {temp}°C (mín: {min_temp}°C)",
+                    "severity": "warning",
+                    "alert_type": "weather"
+                })
+            elif temp > max_temp:
+                alerts.append({
+                    "type": "weather_temperature_high",
+                    "sensor_id": "weather_api",
+                    "temperature": temp,
+                    "threshold": max_temp,
+                    "message": f"Clima actual: {temp}°C (máx: {max_temp}°C)",
+                    "severity": "warning",
+                    "alert_type": "weather"
+                })
+            
+            return alerts
+            
+        except Exception as e:
+            logger.error(f"Error checking weather alerts: {e}")
             return []
