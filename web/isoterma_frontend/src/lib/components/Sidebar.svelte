@@ -7,10 +7,6 @@
 		{ href: '/sensores', label: 'Sensores', icon: '🌡️' },
 		{ href: '/forecast', label: 'Pronóstico', icon: '🌤️' }
 	];
-
-	import { selectedFarm } from '$lib/stores/farms';
-
-	$: farmManagementUrl = $selectedFarm ? `/farm/${$selectedFarm.id}/settings` : null;
 </script>
 
 <aside class="w-64 bg-gray-100 dark:bg-gray-800 h-screen p-4 border-r border-gray-300 dark:border-gray-700">
@@ -32,20 +28,5 @@
 				<span class="font-medium">{item.label}</span>
 			</a>
 		{/each}
-
-		{#if farmManagementUrl}
-			<div class="border-t border-gray-300 dark:border-gray-600 pt-4 mt-4">
-				<a
-					href={farmManagementUrl}
-					class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {$page.url
-						.pathname.includes('/settings')
-						? 'bg-green-500 text-white'
-						: 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}"
-				>
-					<span class="text-xl">⚙️</span>
-					<span class="font-medium">Gestionar Finca</span>
-				</a>
-			</div>
-		{/if}
 	</nav>
 </aside>

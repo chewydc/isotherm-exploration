@@ -68,13 +68,24 @@
 </script>
 
 <div class="container mx-auto p-6">
+	<div class="mb-6 flex items-center justify-between">
+		<div>
+			<h1 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Finca</h1>
+			{#if farm}
+				<h2 class="text-xl text-gray-600">{farm.name}</h2>
+			{/if}
+		</div>
+		<a 
+			href="/" 
+			class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+		>
+			← Volver al Dashboard
+		</a>
+	</div>
+
 	{#if loading}
 		<div class="text-center">Cargando...</div>
 	{:else if farm}
-		<div class="mb-6">
-			<h1 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Finca</h1>
-			<h2 class="text-xl text-gray-600">{farm.name}</h2>
-		</div>
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Configuración de Umbrales -->
@@ -165,5 +176,7 @@
 				</button>
 			</div>
 		</div>
+	{:else}
+		<div class="text-center">Cargando...</div>
 	{/if}
 </div>

@@ -64,11 +64,14 @@
 
 	{#if $selectedFarm}
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 relative">
 				<h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Finca</h3>
 				<p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{$selectedFarm.name}</p>
-				<a href="/farm/{$selectedFarm.id}/settings" class="inline-block mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium">
-					⚙️ Configurar Umbrales
+				<a 
+					href="/farm/{$selectedFarm.id}/settings" 
+					class="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
+				>
+					⚙️ Configurar
 				</a>
 			</div>
 
