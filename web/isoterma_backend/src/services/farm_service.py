@@ -109,7 +109,7 @@ class FarmService:
                         "severity": "warning",
                         "alert_type": "current"
                     })
-                elif temp > max_temp:
+                if temp > max_temp:
                     alerts.append({
                         "type": "temperature_high",
                         "sensor_id": sensor_id,
@@ -175,7 +175,7 @@ class FarmService:
                         "severity": "info",
                         "alert_type": "forecast"
                     })
-                elif temp > max_temp:
+                if temp > max_temp:
                     alerts.append({
                         "type": "forecast_temperature_high",
                         "sensor_id": "forecast",
@@ -226,7 +226,7 @@ class FarmService:
                     "severity": "warning",
                     "alert_type": "weather"
                 })
-            elif temp > max_temp:
+            if temp > max_temp:
                 alerts.append({
                     "type": "weather_temperature_high",
                     "sensor_id": "weather_api",
@@ -236,6 +236,8 @@ class FarmService:
                     "severity": "warning",
                     "alert_type": "weather"
                 })
+            
+            logger.info(f"Weather check: temp={temp}, min={min_temp}, max={max_temp}, alerts={len(alerts)}")
             
             return alerts
             
