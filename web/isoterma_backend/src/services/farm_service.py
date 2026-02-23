@@ -139,20 +139,24 @@ class FarmService:
     def _check_forecast_alerts(farm: dict, min_temp: float, max_temp: float) -> List[dict]:
         """Check forecast for temperature alerts"""
         try:
-            from src.services.weather_service import WeatherService
-            import asyncio
+            import requests
             
-            # Obtener pronóstico
+            # Obtener pronóstico directamente con requests
             lat = farm["location"]["latitude"]
             lon = farm["location"]["longitude"]
             
-            # Ejecutar función async en contexto sync
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            forecast_data = loop.run_until_complete(
-                WeatherService.get_forecast(lat, lon, 3)
-            )
-            loop.close()
+            url = "https://api.open-meteo.com/v1/forecast"
+            params = {
+                'latitude': lat,
+                'longitude': lon,
+                'hourly': 'temperature_2m',
+                'forecast_days': 3,
+                'timezone': 'America/Argentina/Buenos_Aires'
+            }
+            
+            response = requests.get(url, params=params, timeout=15)
+            response.raise_for_status()
+            forecast_data = response.json()
             
             alerts = []
             hourly = forecast_data.get("hourly", {})
@@ -197,24 +201,29 @@ class FarmService:
     def _check_current_weather_alerts(farm: dict, min_temp: float, max_temp: float) -> List[dict]:
         """Check current weather API for temperature alerts"""
         try:
-            from src.services.weather_service import WeatherService
-            import asyncio
+            import requests
             
-            # Obtener clima actual
+            # Obtener clima actual directamente con requests
             lat = farm["location"]["latitude"]
             lon = farm["location"]["longitude"]
             
-            # Ejecutar función async en contexto sync
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            weather_data = loop.run_until_complete(
-                WeatherService.get_current_weather(lat, lon)
-            )
-            loop.close()
+            url = "https://api.open-meteo.com/v1/forecast"
+            params = {
+                'latitude': lat,
+                'longitude': lon,
+                'current': 'temperature_2m',
+                'timezone': 'America/Argentina/Buenos_Aires'
+            }
+            
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            weather_data = response.json()
             
             alerts = []
             current = weather_data.get("current", {})
             temp = current.get("temperature_2m", 0)
+            
+            logger.info(f"Weather check: temp={temp}, min={min_temp}, max={max_temp}")
             
             if temp < min_temp:
                 alerts.append({
@@ -237,8 +246,7 @@ class FarmService:
                     "alert_type": "weather"
                 })
             
-            logger.info(f"Weather check: temp={temp}, min={min_temp}, max={max_temp}, alerts={len(alerts)}")
-            
+            logger.info(f"Weather alerts generated: {len(alerts)}")
             return alerts
             
         except Exception as e:
