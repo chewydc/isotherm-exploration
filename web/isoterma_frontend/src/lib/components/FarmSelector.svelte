@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { selectedFarm, farms } from '$lib/stores/farms';
 	import { api } from '$lib/api/client';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 
 	onMount(async () => {
 		try {
@@ -19,6 +21,11 @@
 		const target = event.target as HTMLSelectElement;
 		const farm = $farms.find((f) => f.id === target.value);
 		selectedFarm.set(farm);
+		
+		// Si estamos en la página de configuración, redirigir a la nueva finca
+		if ($page.route.id?.includes('/farm/[id]/settings')) {
+			goto(`/farm/${target.value}/settings`);
+		}
 	}
 </script>
 

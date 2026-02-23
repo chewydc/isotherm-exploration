@@ -2,12 +2,26 @@
 	import { afterNavigate } from '$app/navigation';
 	import { selectedFarm } from '$lib/stores/farms';
 	import { api } from '$lib/api/client';
+	import { onMount, onDestroy } from 'svelte';
 
 	let weatherData: any = null;
 	let alerts: any[] = [];
 	let loading = false;
 	let loadingAlerts = false;
 	let lastFarmId: string | null = null;
+	let currentDateTime = new Date();
+	let timeInterval: any;
+
+	onMount(() => {
+		// Actualizar fecha/hora cada minuto
+		timeInterval = setInterval(() => {
+			currentDateTime = new Date();
+		}, 60000);
+	});
+
+	onDestroy(() => {
+		if (timeInterval) clearInterval(timeInterval);
+	});
 
 	$: if ($selectedFarm && $selectedFarm.id !== lastFarmId) {
 		lastFarmId = $selectedFarm.id;
@@ -23,16 +37,6 @@
 			refreshFarmData();
 		}
 	});
-
-	// Actualizar cuando la ventana recibe foco (volver de configuración)
-	if (typeof window !== 'undefined') {
-		window.addEventListener('focus', () => {
-			if ($selectedFarm) {
-				refreshFarmData();
-				loadAlerts();
-			}
-		});
-	}
 
 	async function refreshFarmData() {
 		if (!$selectedFarm) return;
@@ -158,18 +162,24 @@
 				{:else}
 					<div class="space-y-2 max-h-48 overflow-y-auto">
 						{#each alerts as alert}
-							<div class="border-l-4 {alert.alert_type === 'forecast' ? 'border-blue-400 bg-blue-50' : alert.alert_type === 'weather' ? 'border-orange-400 bg-orange-50' : 'border-yellow-400 bg-yellow-50'} dark:bg-yellow-900/20 p-3 rounded">
-								<div class="flex items-start">
-									<div class="{alert.alert_type === 'forecast' ? 'text-blue-600' : alert.alert_type === 'weather' ? 'text-orange-600' : 'text-yellow-600'} mr-2">
-										{alert.alert_type === 'forecast' ? '🔮' : alert.alert_type === 'weather' ? '🌡️' : '⚠️'}
+							{@const isMaxTemp = alert.message.includes('(máx:') || alert.message.includes('temperature_high')}
+							<div class="border-l-4 {isMaxTemp ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20' : 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'} p-3 rounded">
+								<div class="flex items-start justify-between">
+									<div class="flex items-start">
+										<div class="{alert.alert_type === 'forecast' ? 'text-blue-600' : alert.alert_type === 'weather' ? 'text-orange-600' : 'text-yellow-600'} mr-2">
+											{alert.alert_type === 'forecast' ? '🔮' : alert.alert_type === 'weather' ? '🌡️' : '⚠️'}
+										</div>
+										<div class="flex-1">
+											<p class="font-medium {isMaxTemp ? 'text-yellow-800' : 'text-blue-800'} dark:text-yellow-200 text-sm">
+												{alert.alert_type === 'forecast' ? 'Pronóstico' : alert.alert_type === 'weather' ? 'Clima Actual' : alert.sensor_id}
+											</p>
+											<p class="text-xs {isMaxTemp ? 'text-yellow-700' : 'text-blue-700'} dark:text-yellow-300">
+												{alert.message}
+											</p>
+										</div>
 									</div>
-									<div class="flex-1">
-										<p class="font-medium {alert.alert_type === 'forecast' ? 'text-blue-800' : alert.alert_type === 'weather' ? 'text-orange-800' : 'text-yellow-800'} dark:text-yellow-200 text-sm">
-											{alert.alert_type === 'forecast' ? 'Pronóstico' : alert.alert_type === 'weather' ? 'Clima Actual' : alert.sensor_id}
-										</p>
-										<p class="text-xs {alert.alert_type === 'forecast' ? 'text-blue-700' : alert.alert_type === 'weather' ? 'text-orange-700' : 'text-yellow-700'} dark:text-yellow-300">
-											{alert.message}
-										</p>
+									<div class="text-lg">
+										{isMaxTemp ? '🔥' : '❄️'}
 									</div>
 								</div>
 							</div>

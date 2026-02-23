@@ -3,6 +3,7 @@
 	import { browser } from '$app/environment';
 
 	export let forecast: any;
+	export let thresholds: any = null;
 
 	let chartCanvas: HTMLCanvasElement;
 	let chart: any;
@@ -213,6 +214,48 @@
 				dayCount++;
 			}
 		});
+
+		// Agregar líneas de umbrales solo para temperatura
+		if (selectedMetric === 'temperature' && thresholds) {
+			if (thresholds.temperature_threshold_min !== undefined) {
+				annotations.thresholdMin = {
+					type: 'line',
+					yMin: thresholds.temperature_threshold_min,
+					yMax: thresholds.temperature_threshold_min,
+					borderColor: '#3b82f6',
+					borderWidth: 3,
+					borderDash: [8, 4],
+					label: {
+						content: `Mín: ${thresholds.temperature_threshold_min}°C`,
+						enabled: true,
+						position: 'end',
+						backgroundColor: '#3b82f6',
+						color: 'white',
+						padding: 4,
+						font: { size: 11, weight: 'bold' }
+					}
+				};
+			}
+			if (thresholds.temperature_threshold_max !== undefined) {
+				annotations.thresholdMax = {
+					type: 'line',
+					yMin: thresholds.temperature_threshold_max,
+					yMax: thresholds.temperature_threshold_max,
+					borderColor: '#ef4444',
+					borderWidth: 3,
+					borderDash: [8, 4],
+					label: {
+						content: `Máx: ${thresholds.temperature_threshold_max}°C`,
+						enabled: true,
+						position: 'end',
+						backgroundColor: '#ef4444',
+						color: 'white',
+						padding: 4,
+						font: { size: 11, weight: 'bold' }
+					}
+				};
+			}
+		}
 
 		return annotations;
 	}

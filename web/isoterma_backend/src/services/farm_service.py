@@ -125,7 +125,7 @@ class FarmService:
             alerts.extend(weather_alerts)
             
             # Alertas de pronóstico
-            forecast_alerts = FarmService._check_forecast_alerts(farm, min_temp, max_temp)
+            forecast_alerts = FarmService._check_forecast_alerts(farm, min_temp, max_temp, settings)
             alerts.extend(forecast_alerts)
             
             logger.info(f"Found {len(alerts)} alerts for farm {farm_id}")
@@ -136,7 +136,7 @@ class FarmService:
             raise
     
     @staticmethod
-    def _check_forecast_alerts(farm: dict, min_temp: float, max_temp: float) -> List[dict]:
+    def _check_forecast_alerts(farm: dict, min_temp: float, max_temp: float, settings: dict) -> List[dict]:
         """Check forecast for temperature alerts"""
         try:
             import requests
@@ -163,30 +163,76 @@ class FarmService:
             times = hourly.get("time", [])
             temperatures = hourly.get("temperature_2m", [])
             
-            # Revisar próximas 24 horas
-            for i in range(min(24, len(temperatures))):
+            # Revisar próximas horas según configuración (por defecto 24h)
+            forecast_hours = settings.get("forecast_alert_hours", 24)
+            from datetime import datetime, timezone
+            
+            # Obtener hora actual en Argentina
+            import pytz
+            argentina_tz = pytz.timezone('America/Argentina/Buenos_Aires')
+            now = datetime.now(argentina_tz)
+            
+            for i in range(min(forecast_hours, len(temperatures))):
                 temp = temperatures[i]
                 time_str = times[i] if i < len(times) else "unknown"
                 
+                # Verificar que la hora sea futura
+                try:
+                    # Parsear como hora local de Argentina
+                    dt_naive = datetime.fromisoformat(time_str)
+                    dt = argentina_tz.localize(dt_naive)
+                    
+                    logger.info(f"Checking forecast: {time_str} -> {dt} vs now {now}, temp={temp}, max={max_temp}")
+                    
+                    # Solo procesar si es una hora futura
+                    if dt <= now:
+                        logger.info(f"Skipping past time: {dt}")
+                        continue
+                        
+                except Exception as e:
+                    logger.error(f"Error parsing time {time_str}: {e}")
+                    continue
+                
+                # Formatear fecha y hora más descriptiva
+                try:
+                    # Determinar si es hoy, mañana o pasado mañana
+                    days_diff = (dt.date() - now.date()).days
+                    if days_diff == 0:
+                        day_label = "Hoy"
+                    elif days_diff == 1:
+                        day_label = "Mañana"
+                    elif days_diff == 2:
+                        day_label = "Pasado mañana"
+                    else:
+                        day_label = dt.strftime("%d/%m")
+                    
+                    time_label = dt.strftime("%H:%M")
+                    full_time_label = f"{day_label} {time_label}"
+                except Exception as e:
+                    logger.error(f"Error formatting time: {e}")
+                    full_time_label = time_str[-5:] if len(time_str) >= 5 else time_str
+                
                 if temp < min_temp:
+                    logger.info(f"Adding low temp alert: {temp} < {min_temp}")
                     alerts.append({
                         "type": "forecast_temperature_low",
                         "sensor_id": "forecast",
                         "temperature": temp,
                         "threshold": min_temp,
                         "time": time_str,
-                        "message": f"Pronóstico: {temp}°C a las {time_str[-5:]} (mín: {min_temp}°C)",
+                        "message": f"Pronóstico: {temp}°C para {full_time_label} (mín: {min_temp}°C)",
                         "severity": "info",
                         "alert_type": "forecast"
                     })
                 if temp > max_temp:
+                    logger.info(f"Adding high temp alert: {temp} > {max_temp}")
                     alerts.append({
                         "type": "forecast_temperature_high",
                         "sensor_id": "forecast",
                         "temperature": temp,
                         "threshold": max_temp,
                         "time": time_str,
-                        "message": f"Pronóstico: {temp}°C a las {time_str[-5:]} (máx: {max_temp}°C)",
+                        "message": f"Pronóstico: {temp}°C para {full_time_label} (máx: {max_temp}°C)",
                         "severity": "info",
                         "alert_type": "forecast"
                     })

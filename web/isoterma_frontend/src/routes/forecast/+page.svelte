@@ -6,16 +6,29 @@
 
 	let forecast: any = null;
 	let loading = false;
+	let farmData: any = null;
 
-	$: if ($selectedFarm?.location) {
+	$: if ($selectedFarm?.id) {
+		loadFarmData();
 		loadForecast();
 	}
 
 	afterNavigate(() => {
-		if ($selectedFarm?.location) {
+		if ($selectedFarm?.id) {
+			loadFarmData();
 			loadForecast();
 		}
 	});
+
+	async function loadFarmData() {
+		if (!$selectedFarm?.id) return;
+		try {
+			const response = await api.getFarm($selectedFarm.id);
+			farmData = response.farm || response.data;
+		} catch (error) {
+			console.error('Error loading farm data:', error);
+		}
+	}
 
 	async function loadForecast() {
 		if (!$selectedFarm?.location) return;
@@ -98,7 +111,7 @@
 
 		<div class="mt-6">
 			<h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">📊 Análisis Meteorológico 72 Horas</h3>
-			<AdvancedForecastChart {forecast} />
+			<AdvancedForecastChart {forecast} thresholds={farmData?.settings} />
 		</div>
 
 		<div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
