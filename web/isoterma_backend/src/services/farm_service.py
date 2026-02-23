@@ -165,12 +165,12 @@ class FarmService:
             
             # Revisar próximas horas según configuración (por defecto 24h)
             forecast_hours = settings.get("forecast_alert_hours", 24)
-            from datetime import datetime, timezone
             
-            # Obtener hora actual en Argentina
-            import pytz
-            argentina_tz = pytz.timezone('America/Argentina/Buenos_Aires')
-            now = datetime.now(argentina_tz)
+            from datetime import datetime, timezone, timedelta
+            
+            # Obtener hora actual en Argentina (UTC-3)
+            argentina_offset = timezone(timedelta(hours=-3))
+            now = datetime.now(argentina_offset)
             
             for i in range(min(forecast_hours, len(temperatures))):
                 temp = temperatures[i]
@@ -180,13 +180,10 @@ class FarmService:
                 try:
                     # Parsear como hora local de Argentina
                     dt_naive = datetime.fromisoformat(time_str)
-                    dt = argentina_tz.localize(dt_naive)
-                    
-                    logger.info(f"Checking forecast: {time_str} -> {dt} vs now {now}, temp={temp}, max={max_temp}")
+                    dt = dt_naive.replace(tzinfo=argentina_offset)
                     
                     # Solo procesar si es una hora futura
                     if dt <= now:
-                        logger.info(f"Skipping past time: {dt}")
                         continue
                         
                 except Exception as e:
@@ -213,7 +210,6 @@ class FarmService:
                     full_time_label = time_str[-5:] if len(time_str) >= 5 else time_str
                 
                 if temp < min_temp:
-                    logger.info(f"Adding low temp alert: {temp} < {min_temp}")
                     alerts.append({
                         "type": "forecast_temperature_low",
                         "sensor_id": "forecast",
@@ -224,8 +220,7 @@ class FarmService:
                         "severity": "info",
                         "alert_type": "forecast"
                     })
-                if temp > max_temp:
-                    logger.info(f"Adding high temp alert: {temp} > {max_temp}")
+                elif temp > max_temp:
                     alerts.append({
                         "type": "forecast_temperature_high",
                         "sensor_id": "forecast",
